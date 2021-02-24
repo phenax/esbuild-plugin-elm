@@ -4,6 +4,7 @@
   "description": "Esbuild plugin for loading elm",
   "main": "index.js",
   "repository": "https://github.com/phenax/esbuild-plugin-elm",
+  "homepage": "https://github.com/phenax/esbuild-plugin-elm",
   "author": "Akshay Nair <phenax5@gmail.com>",
   "license": "MIT",
   "dependencies": {
