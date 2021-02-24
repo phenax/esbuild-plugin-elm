@@ -1,9 +1,9 @@
 # Elm plugin for esbuild
-
+An esbuild plugin for building elm projects
 
 ### Usage
 
-A simple example config can be found in [./example](https://github.com/phenax/esbuild-plugin-elm/tree/master/example).
+A simple example config can be found in [./example](https://github.com/phenax/esbuild-plugin-elm/tree/main/example).
 
 ```js
 esbuild.build({
