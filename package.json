@@ -7,6 +7,7 @@
   "author": "Akshay Nair <phenax5@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "command-exists": "^1.2.9",
     "node-elm-compiler": "^5.0.5"
   },
   "peerDependencies": {
