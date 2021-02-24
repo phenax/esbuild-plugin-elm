@@ -1,0 +1,13 @@
+{
+  "name": "example",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "esbuild src/index.js --bundle --outfile=out.js"
+  },
+  "dependencies": {
+    "elm": "^0.19.1-5",
+    "esbuild": "^0.8.51"
+  }
+}
