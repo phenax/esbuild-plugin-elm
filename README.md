@@ -1,7 +1,8 @@
 # esbuild-plugin-elm
 An esbuild plugin for building elm projects
 
-![npm](https://img.shields.io/npm/v/esbuild-plugin-elm?color=%2351e980&style=flat-square)
+[![npm](https://img.shields.io/npm/v/esbuild-plugin-elm?color=%2351e980&style=flat-square)](https://www.npmjs.com/package/esbuild-plugin-elm)
+
 
 
 ### Install
@@ -16,7 +17,7 @@ npm install -D esbuild-plugin-elm
 
 ### Usage
 
-A simple example config can be found in [./example](https://github.com/phenax/esbuild-plugin-elm/tree/main/example).
+A simple example can be found in [./example](https://github.com/phenax/esbuild-plugin-elm/tree/main/example).
 
 ```js
 esbuild.build({
