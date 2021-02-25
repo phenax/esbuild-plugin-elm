@@ -1,6 +1,9 @@
-import { foobar } from './Main.elm';
+import { Elm } from './Main.elm';
 
-const hello = "world";
+const $root = document.createElement('div');
+document.body.appendChild($root);
 
-console.log(hello, foobar);
+Elm.Main.init({
+  node: $root
+});
 
