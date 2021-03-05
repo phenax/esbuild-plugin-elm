@@ -16,6 +16,8 @@ const getPathToElm = () => {
   return [new Error('Could not find `elm` executable. You can install it with `yarn add elm` or `npm install elm`'), null];
 };
 
+const toBuildError = error => ({ text: error.message });
+
 module.exports = ({ optimize = isProd(), pathToElm: pathToElm_ } = {}) => ({
   name: 'elm',
   setup(build) {
@@ -25,6 +27,7 @@ module.exports = ({ optimize = isProd(), pathToElm: pathToElm_ } = {}) => ({
     const compileOptions = {
       pathToElm,
       optimize,
+      processOpts: { stdout: 'pipe' },
     };
 
     build.onResolve({ filter: fileFilter }, args => ({
@@ -33,8 +36,12 @@ module.exports = ({ optimize = isProd(), pathToElm: pathToElm_ } = {}) => ({
     }))
 
     build.onLoad({ filter: /.*/, namespace }, async args => {
-      const contents = await elmCompiler.compileToString([args.path], compileOptions);
-      return { contents };
+      try {
+        const contents = await elmCompiler.compileToString([args.path], compileOptions);
+        return { contents };
+      } catch(e) {
+        return { errors: [toBuildError(e)] };
+      }
     });
   },
 });
