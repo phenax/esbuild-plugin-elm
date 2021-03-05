@@ -33,9 +33,11 @@ esbuild.build({
 
 ### Options
 
+* `debug` *(optional)*
+  Enable the time-travelling debugger
+
 * `optimize` *(optional)*
   Optimize the js output (true by default if `NODE_ENV` is production)
 
 * `pathToElm` *(optional)*
   Specifiy an explicit path to the elm executable
-
