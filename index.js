@@ -18,7 +18,7 @@ const getPathToElm = () => {
 
 const toBuildError = error => ({ text: error.message });
 
-module.exports = ({ optimize = isProd(), pathToElm: pathToElm_ } = {}) => ({
+module.exports = ({ optimize = isProd(), debug, pathToElm: pathToElm_ } = {}) => ({
   name: 'elm',
   setup(build) {
     const [error, pathToElm] = pathToElm_ ? [null, pathToElm_] : getPathToElm();
@@ -28,6 +28,7 @@ module.exports = ({ optimize = isProd(), pathToElm: pathToElm_ } = {}) => ({
       pathToElm,
       optimize,
       processOpts: { stdout: 'pipe' },
+      debug,
     };
 
     build.onResolve({ filter: fileFilter }, args => ({
