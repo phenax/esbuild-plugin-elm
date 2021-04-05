@@ -38,7 +38,7 @@ module.exports = ({ optimize = isProd(), debug, pathToElm: pathToElm_ } = {}) =>
 
     build.onLoad({ filter: /.*/, namespace }, async args => {
       try {
-        const contents = await elmCompiler.compileToString([args.path], compileOptions);
+        const contents = await elmCompiler.compileToStringSync([args.path], compileOptions);
         return { contents };
       } catch(e) {
         return { errors: [toBuildError(e)] };
