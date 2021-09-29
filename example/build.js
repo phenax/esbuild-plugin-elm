@@ -1,6 +1,6 @@
 const path = require('path');
 const esbuild = require('esbuild');
-const ElmPlugin = require('../index'); // require('esbuild-plugin-elm')
+const ElmPlugin = require('esbuild-plugin-elm');
 
 esbuild.build({
   entryPoints: ['src/index.js'],

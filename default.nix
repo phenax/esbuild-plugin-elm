@@ -6,7 +6,7 @@ let
     elmPackages.create-elm-app
     elmPackages.elm-format
     elmPackages.elm-language-server
-    nodejs-15_x
+    nodejs-16_x
     yarn
   ];
 in
