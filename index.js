@@ -18,7 +18,7 @@ const getPathToElm = () => {
 
 const toBuildError = error => ({ text: error.message });
 
-module.exports = ({ optimize = isProd(), debug, pathToElm: pathToElm_ } = {}) => ({
+module.exports = ({ optimize = isProd(), debug, pathToElm: pathToElm_, clearOnWatch } = {}) => ({
   name: 'elm',
   setup(build) {
     const [error, pathToElm] = pathToElm_ ? [null, pathToElm_] : getPathToElm();
@@ -37,10 +37,14 @@ module.exports = ({ optimize = isProd(), debug, pathToElm: pathToElm_ } = {}) =>
     }))
 
     build.onLoad({ filter: /.*/, namespace }, async args => {
+      if (clearOnWatch) {
+        console.clear();
+      }
+
       try {
         const contents = elmCompiler.compileToStringSync([args.path], compileOptions);
         return { contents };
-      } catch(e) {
+      } catch (e) {
         return { errors: [toBuildError(e)] };
       }
     });
