@@ -16,6 +16,35 @@ const getPathToElm = () => {
   return [new Error('Could not find `elm` executable. You can install it with `yarn add elm` or `npm install elm`'), null];
 };
 
+/**
+ * @param {string} pathToResolve
+ */
+const isDirectory = (pathToResolve) => fs.statSync(pathToResolve).isDirectory();
+
+const getFiles = (path) => {
+  const directoryEntries = fs.readdirSync(path);
+
+  return directoryEntries.reduce((acc, entry) => {
+    let filesToAdd = [];
+    let directoriesToAdd = [];
+
+    if (isDirectory(path + entry)) {
+      const directoryPath = path + entry + '/';
+      const resolvedEntries = getFiles(directoryPath);
+
+      filesToAdd = resolvedEntries.files;
+      directoriesToAdd = [directoryPath, ...resolvedEntries.directories];
+    } else {
+      filesToAdd = [path + entry];
+    }
+
+    return {
+      directories: new Set([...acc.directories, ...directoriesToAdd]),
+      files: new Set([...acc.files, ...filesToAdd]),
+    }
+  }, { directories: new Set([path]), files: new Set() });
+};
+
 const toBuildError = error => ({ text: error.message });
 
 module.exports = ({ optimize = isProd(), debug, pathToElm: pathToElm_, clearOnWatch } = {}) => ({
@@ -31,10 +60,19 @@ module.exports = ({ optimize = isProd(), debug, pathToElm: pathToElm_, clearOnWa
       debug,
     };
 
-    build.onResolve({ filter: fileFilter }, args => ({
-      path: path.join(args.resolveDir, args.path),
-      namespace,
-    }))
+    build.onResolve({ filter: fileFilter }, args => {
+      const resolvedPath = path.join(args.resolveDir, args.path)
+      const fileParts = resolvedPath.split('/');
+      const elmFilesPath = fileParts.slice(0, fileParts.length - 1).join('/') + '/';
+      const resolvedFiles = getFiles(elmFilesPath);
+
+      return ({
+        path: path.join(args.resolveDir, args.path),
+        namespace,
+        watchDirs: [...resolvedFiles.directories],
+        watchFiles: [...resolvedFiles.files]
+      })
+    })
 
     build.onLoad({ filter: /.*/, namespace }, async args => {
       if (clearOnWatch) {
@@ -43,6 +81,7 @@ module.exports = ({ optimize = isProd(), debug, pathToElm: pathToElm_, clearOnWa
 
       try {
         const contents = elmCompiler.compileToStringSync([args.path], compileOptions);
+
         return { contents };
       } catch (e) {
         return { errors: [toBuildError(e)] };
@@ -50,4 +89,3 @@ module.exports = ({ optimize = isProd(), debug, pathToElm: pathToElm_, clearOnWa
     });
   },
 });
-
