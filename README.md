@@ -41,3 +41,6 @@ esbuild.build({
 
 * `pathToElm` *(optional)*
   Specifiy an explicit path to the elm executable
+
+* `clearOnWatch` *(optional)*
+  Clear the console before rebuilding

@@ -1,4 +1,3 @@
-const path = require('path');
 const esbuild = require('esbuild');
 const ElmPlugin = require('esbuild-plugin-elm');
 
@@ -6,7 +5,11 @@ esbuild.build({
   entryPoints: ['src/index.js'],
   bundle: true,
   outdir: 'dist',
+  watch: process.argv.includes('--watch'),
   plugins: [
-    ElmPlugin({ debug: true }),
+    ElmPlugin({
+      debug: true,
+      clearOnWatch: true,
+    }),
   ],
 }).catch(_e => process.exit(1))
