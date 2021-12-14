@@ -39,7 +39,7 @@ module.exports = ({ optimize = isProd(), debug, pathToElm: pathToElm_, clearOnWa
       return ({
         path: path.join(args.resolveDir, args.path),
         namespace,
-        watchFiles: resolvedDependencies
+        watchFiles: [resolvedPath, ...resolvedDependencies]
       })
     })
 
