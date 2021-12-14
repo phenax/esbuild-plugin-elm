@@ -2,7 +2,6 @@ const path = require('path');
 const fs = require('fs');
 const elmCompiler = require('node-elm-compiler');
 const cmdExists = require('command-exists').sync;
-const findElmDeps = require('find-elm-dependencies');
 
 const namespace = 'elm';
 const fileFilter = /\.elm$/;
@@ -34,7 +33,7 @@ module.exports = ({ optimize = isProd(), debug, pathToElm: pathToElm_, clearOnWa
 
     build.onResolve({ filter: fileFilter }, async (args) => {
       const resolvedPath = path.join(args.resolveDir, args.path)
-      const resolvedDependencies = await findElmDeps.findAllDependencies(resolvedPath)
+      const resolvedDependencies = await elmCompiler.findAllDependencies(resolvedPath)
 
       return ({
         path: path.join(args.resolveDir, args.path),

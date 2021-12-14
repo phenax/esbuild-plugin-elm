@@ -9,7 +9,6 @@
   "license": "MIT",
   "dependencies": {
     "command-exists": "^1.2.9",
-    "find-elm-dependencies": "^2.0.4",
     "node-elm-compiler": "^5.0.6"
   },
   "peerDependencies": {
