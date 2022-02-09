@@ -44,3 +44,8 @@ esbuild.build({
 
 * `clearOnWatch` *(optional)* *(default: `false`)*
   Clear the console before re-building on file changes
+  
+
+### Tutorials
+
+* [How to Install Elm, on a Rails App, via esbuild, using `esbuild-plugin-elm`](https://benkoshy.github.io/2022/02/08/elm-via-esbuild-on-rails.html)
