@@ -8,21 +8,22 @@ const fileFilter = /\.elm$/;
 
 const fileExists = p => fs.existsSync(p) && fs.statSync(p).isFile();
 
-const isProd = () => process.env.NODE_ENV === 'production';
-
 const getPathToElm = () => {
-  if (fileExists('./node_modules/.bin/elm')) return [null, './node_modules/.bin/elm']
-  if (cmdExists('elm')) return [null, 'elm'];
-  return [new Error('Could not find `elm` executable. You can install it with `yarn add elm` or `npm install elm`'), null];
+  if (fileExists('./node_modules/.bin/elm')) return './node_modules/.bin/elm'
+  if (cmdExists('elm')) return 'elm'
+
+  throw new Error('Could not find `elm` executable. You can install it with `yarn add elm` or `npm install elm`')
 };
 
 const toBuildError = error => ({ text: error.message });
 
-module.exports = ({ optimize = isProd(), debug, pathToElm: pathToElm_, clearOnWatch } = {}) => ({
+module.exports = (config = {}) => ({
   name: 'elm',
   setup(build) {
-    const [error, pathToElm] = pathToElm_ ? [null, pathToElm_] : getPathToElm();
-    if (error) throw error;
+    const isProd = process.env.NODE_ENV === 'production'
+
+    const { optimize = isProd, debug, clearOnWatch } = config
+    const pathToElm = config.pathToElm || getPathToElm();
 
     const compileOptions = {
       pathToElm,
