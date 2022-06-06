@@ -1,18 +1,19 @@
 const path = require('path');
-const fs = require('fs');
+const fs = require('fs').promises;
 const elmCompiler = require('node-elm-compiler');
-const cmdExists = require('command-exists').sync;
+const commandExists = require('command-exists');
 
 const namespace = 'elm';
 const fileFilter = /\.elm$/;
 
-const fileExists = p => fs.existsSync(p) && fs.statSync(p).isFile();
+const fileExists = filePath => fs.stat(filePath).then(stat => stat.isFile()).catch(() => false);
 
-const getPathToElm = () => {
-  if (fileExists('./node_modules/.bin/elm')) return './node_modules/.bin/elm'
-  if (cmdExists('elm')) return 'elm'
+const getPathToElm = async () => {
+  let [fileDoesExist, commandDoesExist] = await Promise.all([fileExists('./node_modules/.bin/elm'), commandExists('elm')]);
+  if (fileDoesExist) return './node_modules/.bin/elm';
+  if (commandDoesExist) return 'elm';
 
-  throw new Error('Could not find `elm` executable. You can install it with `yarn add elm` or `npm install elm`')
+  throw new Error('Could not find `elm` executable. You can install it with `yarn add elm` or `npm install elm`');
 };
 
 const toBuildError = error => ({ text: error.message });
