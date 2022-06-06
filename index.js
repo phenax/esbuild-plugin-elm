@@ -18,9 +18,9 @@ const getPathToElm = async () => {
 
 const toBuildError = error => ({ text: error.message });
 
-const validateDependencies = async depsMap => {
+const validateDependencies = async (fileCache, depsMap) => {
   const depStatus = await Promise.all([...depsMap].map(async ([depPath, cachedDep]) => {
-    const newInput = await fs.readFile(depPath, 'utf8');
+    const newInput = await readFile(fileCache, depPath);
 
     if (cachedDep.input === newInput) {
       return true;
@@ -32,11 +32,11 @@ const validateDependencies = async depsMap => {
   return depStatus.every(isReady => isReady);
 };
 
-const checkCache = async (cache, mainFilePath, compileOptions) => {
+const checkCache = async (fileCache, cache, mainFilePath, compileOptions) => {
   const cached = cache.get(mainFilePath);
-  const newInput = await fs.readFile(mainFilePath, 'utf8');
+  const newInput = await readFile(fileCache, mainFilePath);
 
-  const depsUnchanged = await validateDependencies(cached.dependencies);
+  const depsUnchanged = await validateDependencies(fileCache, cached.dependencies);
 
   if (depsUnchanged && cached.input === newInput) {
     return cached.output;
@@ -70,9 +70,9 @@ const updateDependencies = (cache, resolvedPath, dependencyPaths) => {
 const cachedElmCompiler = () => {
   const cache = new Map();
 
-  const compileToStringSync = async (inputPath, compileOptions) => {
+  const compileToStringSync = async (fileCache, inputPath, compileOptions) => {
     try {
-      const output = await checkCache(cache, inputPath, compileOptions);
+      const output = await checkCache(fileCache, cache, inputPath, compileOptions);
 
       return output;
     } catch (e) {
@@ -101,6 +101,11 @@ module.exports = (config = {}) => ({
 
     const { cache, compileToStringSync } = cachedElmCompiler();
 
+    const fileCache = new Map();
+    build.onStart(() => {
+      fileCache.clear();
+    });
+
     build.onResolve({ filter: fileFilter }, async (args) => {
       const resolvedPath = path.join(args.resolveDir, args.path);
       const resolvedDependencies = await elmCompiler.findAllDependencies(resolvedPath);
@@ -121,7 +126,21 @@ module.exports = (config = {}) => ({
         console.clear();
       }
 
-      return compileToStringSync(args.path, compileOptions);
+      return compileToStringSync(fileCache, args.path, compileOptions);
     });
   },
 });
+
+
+const readFile = async (fileCache, filePath) => {
+  let cached = fileCache.get(filePath);
+
+  if (cached !== undefined) {
+    return cached;
+  } else {
+    let fileContents = await fs.readFile(filePath, 'utf8');
+    fileCache.set(filePath, fileContents);
+
+    return fileContents
+  }
+}
