@@ -6,6 +6,8 @@ const cmdExists = require('command-exists').sync;
 const namespace = 'elm';
 const fileFilter = /\.elm$/;
 
+const PURE_FUNCS = [ 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'A9']
+
 const fileExists = p => fs.existsSync(p) && fs.statSync(p).isFile();
 
 const getPathToElm = () => {
@@ -24,6 +26,13 @@ module.exports = (config = {}) => ({
 
     const { optimize = isProd, debug, clearOnWatch } = config
     const pathToElm = config.pathToElm || getPathToElm();
+
+    const options = build.initialOptions
+    if (options.minify) {
+      Object.assign(options, {
+        pure: [ ...(options.pure || []), ...PURE_FUNCS ],
+      })
+    }
 
     const compileOptions = {
       pathToElm,
