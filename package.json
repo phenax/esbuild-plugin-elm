@@ -1,6 +1,6 @@
 {
   "name": "esbuild-plugin-elm",
-  "version": "0.0.8",
+  "version": "0.0.10",
   "description": "Esbuild plugin for loading elm",
   "main": "index.js",
   "repository": "https://github.com/phenax/esbuild-plugin-elm",
