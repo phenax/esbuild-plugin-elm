@@ -44,7 +44,11 @@ esbuild.build({
 
 * `clearOnWatch` *(optional)* *(default: `false`)*
   Clear the console before re-building on file changes
+
+* `cwd` *(optional)* *(default: `<PWD>`)*
+  The current working directory/elm project root
   
+
 
 ### Tutorials
 
