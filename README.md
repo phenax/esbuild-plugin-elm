@@ -49,9 +49,9 @@ esbuild.build({
 
   Clear the console before re-building on file changes
 
-* `cwd` *(optional)* *(default: `<PWD>`)*
+* `cwd` *(default: `<PWD>`)*:
+
   The current working directory/elm project root
-  
 
 
 ### Tutorials
