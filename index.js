@@ -24,7 +24,7 @@ module.exports = (config = {}) => ({
   setup(build) {
     const isProd = process.env.NODE_ENV === 'production'
 
-    const { optimize = isProd, debug, clearOnWatch } = config
+    const { optimize = isProd, cwd, debug, clearOnWatch } = config
     const pathToElm = config.pathToElm || getPathToElm();
 
     const options = build.initialOptions
@@ -38,6 +38,7 @@ module.exports = (config = {}) => ({
       pathToElm,
       optimize,
       processOpts: { stdout: 'pipe' },
+      cwd,
       debug,
     };
 
