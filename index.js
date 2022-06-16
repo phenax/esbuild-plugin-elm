@@ -6,18 +6,26 @@ const commandExists = require('command-exists');
 const namespace = 'elm';
 const fileFilter = /\.elm$/;
 
+// Like command-exists' function but returns undefined when the command is missing,
+// instead of throwing an error.
+const commandExists = path =>
+  commandExists_(path).catch(_ => undefined);
+
 const getPathToElm = async () => {
   const commands = ['./node_modules/.bin/elm', 'elm'];
   const CMD_NOT_FOUND_ERR = 'Could not find `elm` executable. You can install it with `yarn add elm` or `npm install elm`';
 
-  try {
-    const command = await Promise.any(commands.map(command => commandExists(command)));
+  const foundCommands = await Promise.all(commands.map(commandExists));
 
-    return command;
-  } catch (_) {
+  const elmCommand = foundCommands.find(cmd => cmd !== undefined);
+
+  if (elmCommand) {
+    return elmCommand;
+  } else {
     throw new Error(CMD_NOT_FOUND_ERR);
   }
-};
+}
+
 
 const toBuildError = error => ({ text: error.message });
 
