@@ -1,7 +1,7 @@
 const path = require('path');
 const fs = require('fs').promises;
 const elmCompiler = require('node-elm-compiler');
-const commandExists = require('command-exists');
+const commandExists_ = require('command-exists');
 
 const namespace = 'elm';
 const fileFilter = /\.elm$/;
@@ -27,11 +27,30 @@ const getPathToElm = async () => {
 }
 
 
+// Cached version of `fs.stat`.
+// Cache is cleared on each build.
+const readFileModificationTime = async (fileCache, filePath) => {
+  const cached = fileCache.get(filePath);
+
+  if (cached !== undefined) {
+    return cached;
+  }
+  const stat = await fs.stat(filePath);
+  const fileContents = stat.mtimeMs;
+
+  fileCache.set(filePath, fileContents);
+
+  return fileContents;
+};
+
 const toBuildError = error => ({ text: error.message });
 
+// Checks whether all deps for a "main" elm file are unchanged.
+// These only include source deps (might need to reset the dev server if you add an extra dep).
+// If not, we need to recompile the file importing them.
 const validateDependencies = async (fileCache, depsMap) => {
   const depStatus = await Promise.all([...depsMap].map(async ([depPath, cachedDep]) => {
-    const newInput = await readFile(fileCache, depPath);
+    const newInput = await readFileModificationTime(fileCache, depPath);
 
     if (cachedDep.input === newInput) {
       return true;
@@ -43,15 +62,18 @@ const validateDependencies = async (fileCache, depsMap) => {
   return depStatus.every(isReady => isReady);
 };
 
+// Cached version of `elmCompiler.compileToStringSync`
+// Cache is persisted across builds
 const checkCache = async (fileCache, cache, mainFilePath, compileOptions) => {
   const cached = cache.get(mainFilePath);
-  const newInput = await readFile(fileCache, mainFilePath);
+  const newInput = await readFileModificationTime(fileCache, mainFilePath);
 
   const depsUnchanged = await validateDependencies(fileCache, cached.dependencies);
 
   if (depsUnchanged && cached.input === newInput) {
     return cached.output;
   }
+  // Can't use the async version:
   // https://github.com/phenax/esbuild-plugin-elm/issues/2
   const contents = elmCompiler.compileToStringSync([mainFilePath], compileOptions);
   const output = { contents };
@@ -65,6 +87,7 @@ const checkCache = async (fileCache, cache, mainFilePath, compileOptions) => {
   return output;
 };
 
+// Recompute dependencies but keep cached artifacts if we had them
 const updateDependencies = (cache, resolvedPath, dependencyPaths) => {
   let cached = cache.get(resolvedPath)
     || { input: undefined, output: undefined, dependencies: new Map() };
@@ -93,7 +116,6 @@ const cachedElmCompiler = () => {
 
   return { cache, compileToStringSync };
 };
-
 
 module.exports = (config = {}) => ({
   name: 'elm',
@@ -134,6 +156,7 @@ module.exports = (config = {}) => ({
 
     build.onLoad({ filter: /.*/, namespace }, async (args) => {
       if (clearOnWatch) {
+        // eslint-disable-next-line no-console
         console.clear();
       }
 
@@ -141,17 +164,3 @@ module.exports = (config = {}) => ({
     });
   },
 });
-
-
-const readFile = async (fileCache, filePath) => {
-  let cached = fileCache.get(filePath);
-
-  if (cached !== undefined) {
-    return cached;
-  } else {
-    let fileContents = await fs.readFile(filePath, 'utf8');
-    fileCache.set(filePath, fileContents);
-
-    return fileContents
-  }
-}
