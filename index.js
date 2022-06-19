@@ -59,7 +59,7 @@ module.exports = (config = {}) => ({
       }
 
       try {
-        const contents = elmCompiler.compileToStringSync([args.path], compileOptions);
+        const contents = await elmCompiler.compileToString([args.path], compileOptions);
 
         return { contents };
       } catch (e) {
