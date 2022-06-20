@@ -6,6 +6,8 @@ const commandExists_ = require('command-exists');
 const namespace = 'elm';
 const fileFilter = /\.elm$/;
 
+const PURE_FUNCS = [ 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'A9']
+
 // Like command-exists' function but returns undefined when the command is missing,
 // instead of throwing an error.
 const commandExists = path =>
@@ -122,13 +124,21 @@ module.exports = (config = {}) => ({
   async setup(build) {
     const isProd = process.env.NODE_ENV === 'production';
 
-    const { optimize = isProd, debug, clearOnWatch } = config;
+    const { optimize = isProd, cwd, debug, clearOnWatch } = config
     const pathToElm = config.pathToElm || await getPathToElm();
+
+    const options = build.initialOptions
+    if (options.minify) {
+      Object.assign(options, {
+        pure: [ ...(options.pure || []), ...PURE_FUNCS ],
+      })
+    }
 
     const compileOptions = {
       pathToElm,
       optimize,
       processOpts: { stdout: 'pipe' },
+      cwd,
       debug,
     };
 

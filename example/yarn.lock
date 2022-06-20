@@ -125,7 +125,7 @@ elm@^0.19.1-5:
     request "^2.88.0"
 
 "esbuild-plugin-elm@file:..":
-  version "0.0.4"
+  version "0.0.10"
   dependencies:
     command-exists "^1.2.9"
     node-elm-compiler "^5.0.6"

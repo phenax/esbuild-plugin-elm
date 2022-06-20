@@ -33,18 +33,26 @@ esbuild.build({
 
 ### Options
 
-* `debug` *(optional)* *(default: `false`)*
+* `debug` *(default: `false`)*:
+
   Enable the time-travelling debugger
 
-* `optimize` *(optional)* *(default: `NODE_ENV === 'production'`)*
+* `optimize` *(default: `NODE_ENV === 'production'`)*:
+
   Optimize the js output (true by default if `NODE_ENV` is production)
 
-* `pathToElm` *(optional)* *(default: `node_modules/.bin/elm || elm`)*
+* `pathToElm` *(default: `node_modules/.bin/elm || elm`)*:
+
   Specifiy an explicit path to the elm executable
 
-* `clearOnWatch` *(optional)* *(default: `false`)*
+* `clearOnWatch` *(default: `false`)*:
+
   Clear the console before re-building on file changes
-  
+
+* `cwd` *(default: `<PWD>`)*:
+
+  The current working directory/elm project root
+
 
 ### Tutorials
 
