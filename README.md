@@ -43,7 +43,7 @@ esbuild.build({
 
 * `pathToElm` *(default: `node_modules/.bin/elm || elm`)*:
 
-  Specifiy an explicit path to the elm executable
+  Specify an explicit path to the elm executable
 
 * `clearOnWatch` *(default: `false`)*:
 
