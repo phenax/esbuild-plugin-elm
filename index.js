@@ -14,7 +14,7 @@ const commandExists = path =>
   commandExists_(path).catch(_ => undefined);
 
 const getPathToElm = async () => {
-  const commands = ['./node_modules/.bin/elm', 'elm'];
+  const commands = [path.resolve('./node_modules/.bin/elm'), 'elm'];
   const CMD_NOT_FOUND_ERR = 'Could not find `elm` executable. You can install it with `yarn add elm` or `npm install elm`';
 
   const foundCommands = await Promise.all(commands.map(commandExists));
