@@ -15,6 +15,7 @@ esbuild.build({
       debug: true,
       optimize: isProd,
       clearOnWatch: watch,
+      verbose: true,
     }),
   ],
 }).catch(_e => process.exit(1))
