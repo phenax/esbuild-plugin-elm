@@ -124,7 +124,7 @@ module.exports = (config = {}) => ({
   async setup(build) {
     const isProd = process.env.NODE_ENV === 'production';
 
-    const { optimize = isProd, cwd, debug, clearOnWatch } = config
+    const { optimize = isProd, cwd, debug, verbose, clearOnWatch } = config
     const pathToElm = config.pathToElm || await getPathToElm();
 
     const options = build.initialOptions
@@ -140,6 +140,7 @@ module.exports = (config = {}) => ({
       processOpts: { stdout: 'pipe' },
       cwd,
       debug,
+      verbose,
     };
 
     const { cache, compileToStringSync } = cachedElmCompiler();

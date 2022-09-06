@@ -53,6 +53,10 @@ esbuild.build({
 
   The current working directory/elm project root
 
+* `verbose` *(default: `false`)*:
+
+  Enable verbose output of `node-elm-compiler`
+
 
 ### Tutorials
 
