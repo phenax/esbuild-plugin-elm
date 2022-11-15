@@ -123,7 +123,8 @@ const fileExists = (file) => {
   return fs.stat(file).then(stat => stat.isFile()).catch(_ => false);
 };
 
-// Attempts to resolve a file path by joining to each load path.
+// Attempts to resolve a file path by joining to each load path, and returns the
+// resolved path if that file exists.
 // If no load paths are provided, or none resolve, the file path is assumed to
 // be relative to `resolveDir`.
 const resolvePath = async (resolveDir, filePath, loadPaths = []) => {
