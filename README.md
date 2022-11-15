@@ -57,6 +57,10 @@ esbuild.build({
 
   Enable verbose output of `node-elm-compiler`
 
+* `loadPaths` *(default: `[]`)*:
+
+  Paths in which to look for elm files. If unset, all paths are assumed to be relative to the file importing them.
+
 
 ### Tutorials
 

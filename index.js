@@ -119,12 +119,37 @@ const cachedElmCompiler = () => {
   return { cache, compileToStringSync };
 };
 
+const fileExists = (file) => {
+  return fs.stat(file).then(stat => stat.isFile()).catch(_ => false);
+};
+
+// Attempts to resolve a file path by joining to each load path.
+// If no load paths are provided, or none resolve, the file path is assumed to
+// be relative to `resolveDir`.
+const resolvePath = async (resolveDir, filePath, loadPaths = []) => {
+  const relativePath = path.join(resolveDir, filePath);
+
+  if (loadPaths.length === 0) {
+    return relativePath;
+  }
+
+  for (let loadPath of loadPaths) {
+    let joinedPath = path.join(loadPath, filePath);
+
+    if (await fileExists(joinedPath)) {
+      return joinedPath;
+    }
+  }
+
+  return relativePath;
+};
+
 module.exports = (config = {}) => ({
   name: 'elm',
   async setup(build) {
     const isProd = process.env.NODE_ENV === 'production';
 
-    const { optimize = isProd, cwd, debug, verbose, clearOnWatch } = config
+    const { optimize = isProd, cwd, debug, verbose, clearOnWatch, loadPaths = [] } = config
     const pathToElm = config.pathToElm || await getPathToElm();
 
     const options = build.initialOptions
@@ -151,7 +176,7 @@ module.exports = (config = {}) => ({
     });
 
     build.onResolve({ filter: fileFilter }, async (args) => {
-      const resolvedPath = path.join(args.resolveDir, args.path);
+      const resolvedPath = await resolvePath(args.resolveDir, args.path, loadPaths);
       const resolvedDependencies = await elmCompiler.findAllDependencies(resolvedPath);
 
       // I think we need to update deps on each resolve because you might
