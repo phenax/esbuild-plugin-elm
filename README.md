@@ -59,7 +59,7 @@ esbuild.build({
 
 * `loadPaths` *(default: `[]`)*:
 
-  Paths in which to look for elm files. If unset, all paths are assumed to be relative to the file importing them.
+  Paths in which to look for elm files. If unset, or no file exists at that load path, then the file path is assumed to be relative to the file importing it.
 
 
 ### Tutorials
