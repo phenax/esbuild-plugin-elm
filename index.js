@@ -145,12 +145,23 @@ const resolvePath = async (resolveDir, filePath, loadPaths = []) => {
   return relativePath;
 };
 
+const getLoadPaths = async (cwd = '.') => {
+  var readFile = await fs.readFile(path.join(cwd, 'elm.json'), 'utf8');
+  var elmPackage = JSON.parse(readFile);
+
+  var paths = elmPackage['source-directories'].map((dir) => {
+      return path.join(cwd, dir);
+  });
+
+  return paths;
+}
+
 module.exports = (config = {}) => ({
   name: 'elm',
   async setup(build) {
     const isProd = process.env.NODE_ENV === 'production';
 
-    const { optimize = isProd, cwd, debug, verbose, clearOnWatch, loadPaths = [] } = config
+    const { optimize = isProd, cwd, debug, verbose, clearOnWatch } = config
     const pathToElm = config.pathToElm || await getPathToElm();
 
     const options = build.initialOptions
@@ -175,6 +186,8 @@ module.exports = (config = {}) => ({
     build.onStart(() => {
       fileCache.clear();
     });
+
+    const loadPaths = await getLoadPaths(cwd);
 
     build.onResolve({ filter: fileFilter }, async (args) => {
       const resolvedPath = await resolvePath(args.resolveDir, args.path, loadPaths);

@@ -30,6 +30,9 @@ esbuild.build({
 }).catch(e => (console.error(e), process.exit(1)))
 ```
 
+### Import paths
+
+Import paths will be resolved using the paths listed in `source-directories` in `elm.json`. If none resolve, the import is assumed to be relative to the importing file.
 
 ### Options
 
@@ -56,10 +59,6 @@ esbuild.build({
 * `verbose` *(default: `false`)*:
 
   Enable verbose output of `node-elm-compiler`
-
-* `loadPaths` *(default: `[]`)*:
-
-  Paths in which to look for elm files. If unset, or no file exists at that load path, then the file path is assumed to be relative to the file importing it.
 
 
 ### Tutorials
