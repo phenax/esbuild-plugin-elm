@@ -146,10 +146,10 @@ const resolvePath = async (resolveDir, filePath, loadPaths = []) => {
 };
 
 const getLoadPaths = async (cwd = '.') => {
-  var readFile = await fs.readFile(path.join(cwd, 'elm.json'), 'utf8');
-  var elmPackage = JSON.parse(readFile);
+  const readFile = await fs.readFile(path.join(cwd, 'elm.json'), 'utf8');
+  const elmPackage = JSON.parse(readFile);
 
-  var paths = elmPackage['source-directories'].map((dir) => {
+  const paths = elmPackage['source-directories'].map((dir) => {
       return path.join(cwd, dir);
   });
 
