@@ -128,21 +128,15 @@ const fileExists = (file) => {
 // If no load paths are provided, or none resolve, the file path is assumed to
 // be relative to `resolveDir`.
 const resolvePath = async (resolveDir, filePath, loadPaths = []) => {
-  const relativePath = path.join(resolveDir, filePath);
-
-  if (loadPaths.length === 0) {
-    return relativePath;
-  }
-
-  for (let loadPath of loadPaths) {
-    let joinedPath = path.join(loadPath, filePath);
+  for (const loadPath of loadPaths) {
+    const joinedPath = path.join(loadPath, filePath);
 
     if (await fileExists(joinedPath)) {
       return joinedPath;
     }
   }
 
-  return relativePath;
+  return path.join(resolveDir, filePath);
 };
 
 const getLoadPaths = async (cwd = '.') => {
