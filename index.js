@@ -119,6 +119,37 @@ const cachedElmCompiler = () => {
   return { cache, compileToStringSync };
 };
 
+const fileExists = (file) => {
+  return fs.stat(file).then(stat => stat.isFile()).catch(_ => false);
+};
+
+// Attempts to resolve a file path by joining to each load path, and returns the
+// resolved path if that file exists.
+// If no load paths are provided, or none resolve, the file path is assumed to
+// be relative to `resolveDir`.
+const resolvePath = async (resolveDir, filePath, loadPaths = []) => {
+  for (const loadPath of loadPaths) {
+    const joinedPath = path.join(loadPath, filePath);
+
+    if (await fileExists(joinedPath)) {
+      return joinedPath;
+    }
+  }
+
+  return path.join(resolveDir, filePath);
+};
+
+const getLoadPaths = async (cwd = '.') => {
+  const readFile = await fs.readFile(path.join(cwd, 'elm.json'), 'utf8');
+  const elmPackage = JSON.parse(readFile);
+
+  const paths = elmPackage['source-directories'].map((dir) => {
+      return path.join(cwd, dir);
+  });
+
+  return paths;
+}
+
 module.exports = (config = {}) => ({
   name: 'elm',
   async setup(build) {
@@ -150,8 +181,10 @@ module.exports = (config = {}) => ({
       fileCache.clear();
     });
 
+    const loadPaths = await getLoadPaths(cwd);
+
     build.onResolve({ filter: fileFilter }, async (args) => {
-      const resolvedPath = path.join(args.resolveDir, args.path);
+      const resolvedPath = await resolvePath(args.resolveDir, args.path, loadPaths);
       const resolvedDependencies = await elmCompiler.findAllDependencies(resolvedPath);
 
       // I think we need to update deps on each resolve because you might

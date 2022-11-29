@@ -30,6 +30,9 @@ esbuild.build({
 }).catch(e => (console.error(e), process.exit(1)))
 ```
 
+### Import paths
+
+Import paths will be resolved using the paths listed in `source-directories` in `elm.json`. If none resolve, the import is assumed to be relative to the importing file.
 
 ### Options
 
