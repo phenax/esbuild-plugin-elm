@@ -6,7 +6,7 @@ const commandExists_ = require('command-exists');
 const namespace = 'elm';
 const fileFilter = /\.elm$/;
 
-const PURE_FUNCS = [ 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'A9']
+const PURE_FUNCS = [ 'F2', 'F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F9', 'A2', 'A3', 'A4', 'A5', 'A6', 'A7', 'A8', 'A9' ]
 
 // Like command-exists' function but returns undefined when the command is missing,
 // instead of throwing an error.
@@ -143,11 +143,7 @@ const getLoadPaths = async (cwd = '.') => {
   const readFile = await fs.readFile(path.join(cwd, 'elm.json'), 'utf8');
   const elmPackage = JSON.parse(readFile);
 
-  const paths = elmPackage['source-directories'].map((dir) => {
-      return path.join(cwd, dir);
-  });
-
-  return paths;
+  return elmPackage['source-directories']
 }
 
 module.exports = (config = {}) => ({
