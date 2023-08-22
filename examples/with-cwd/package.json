@@ -1,7 +1,7 @@
 {
-  "name": "elm-esbuild-example",
+  "name": "elm-esbuild-example-with-cwd",
   "version": "1.0.0",
-  "main": "src/index.js",
+  "main": "index.js",
   "license": "MIT",
   "scripts": {
     "build": "node ./build.js",
@@ -10,6 +10,6 @@
   "dependencies": {
     "elm": "^0.19.1-5",
     "esbuild": "0.12.24",
-    "esbuild-plugin-elm": "file:../"
+    "esbuild-plugin-elm": "file:../../"
   }
 }

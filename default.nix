@@ -1,4 +1,4 @@
-{ pkgs ? import <nixpkgs> {}, ... }:
+{ pkgs ? import <nixpkgs> { }, ... }:
 
 let
   packages = with pkgs; [
@@ -6,7 +6,7 @@ let
     elmPackages.create-elm-app
     elmPackages.elm-format
     elmPackages.elm-language-server
-    nodejs-16_x
+    nodejs-18_x
     yarn
   ];
 in

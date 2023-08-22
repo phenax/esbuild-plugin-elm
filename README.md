@@ -17,7 +17,7 @@ npm install -D esbuild-plugin-elm
 
 ### Usage
 
-A simple example can be found in [./example](https://github.com/phenax/esbuild-plugin-elm/tree/main/example).
+A simple example can be found in [./examples/basic/](https://github.com/phenax/esbuild-plugin-elm/tree/main/examples/basic).
 
 ```js
 esbuild.build({

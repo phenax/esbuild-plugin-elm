@@ -1,0 +1,15 @@
+{
+  "name": "elm-esbuild-example",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "node ./build.js",
+    "watch": "node ./build.js --watch"
+  },
+  "dependencies": {
+    "elm": "^0.19.1-5",
+    "esbuild": "0.12.24",
+    "esbuild-plugin-elm": "file:../../"
+  }
+}
